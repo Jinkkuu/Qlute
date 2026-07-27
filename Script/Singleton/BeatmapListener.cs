@@ -111,7 +111,18 @@ public class BeatmapLegend
 	/// Path of the beatmap
 	/// </summary>
 	public string Path { get; set; } = null;
+	/// <summary>
+	/// Rank Status
+	/// </summary>
 	public int RankStatus { get; set; } = RankStatusLegend.Unknown;
+	/// <summary>
+	/// Gamemode ID
+	/// 0 = Mania
+	/// 1 = Taiko
+	/// 2 = Dash! (WIP)
+	/// 3 = Tap! (WIP)
+	/// </summary>
+	public int GameModeID { get; set; } = 0;
 }
 
 public static class RankStatusLegend

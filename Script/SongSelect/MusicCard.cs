@@ -8,6 +8,9 @@ public partial class MusicCard : Button
 {
 	private SettingsOperator SettingsOperator { get; set; }
 
+	[Export]
+	public int GameMode { get; set; } = 0;
+	private TextureRect GameModeIcon { get; set; }
 	public Button self { get; set; }
 	public TextureRect Cover { get; set; }
 	public Timer Wait { get; set; }
@@ -143,6 +146,20 @@ public partial class MusicCard : Button
 		}
 	}
 
+	private void Gamemodeiconchange()
+	{
+		// Temporarily puting this so i can push this release. :< 
+		GameModeIcon.Texture = GD.Load<Texture2D>("res://Resources/System/GamemodeIcons/standard.png");
+		return;
+		switch (GameMode)
+		{
+			case -1 : GameModeIcon.Texture = GD.Load<Texture2D>("res://Resources/System/GamemodeIcons/Unknown.png"); break;
+			case 0 : GameModeIcon.Texture = GD.Load<Texture2D>("res://Resources/System/GamemodeIcons/standard.png"); break;
+			case 1 : GameModeIcon.Texture = GD.Load<Texture2D>("res://Resources/System/GamemodeIcons/Taiko.png"); break;
+			case 2 : GameModeIcon.Texture = GD.Load<Texture2D>("res://Resources/System/GamemodeIcons/Dash.png"); break;
+			case 3 : GameModeIcon.Texture = GD.Load<Texture2D>("res://Resources/System/GamemodeIcons/Tapo.png"); break;
+		}
+	}
 	public override void _Ready()
 	{
 		PivotOffset = new Vector2(Size.X / 2, Size.Y / 2);
@@ -154,7 +171,10 @@ public partial class MusicCard : Button
 		Version = GetNode<Label>("MarginContainer/VBoxContainer/InfoBoxBG/InfoBox/Version");
 		Ranked = GetNode<PanelContainer>("MarginContainer/VBoxContainer/InfoBoxBG/InfoBox/Ranked");
 		RankedText = GetNode<Label>("MarginContainer/VBoxContainer/InfoBoxBG/InfoBox/Ranked/RankText");
-
+		GameModeIcon = GetNode<TextureRect>("GameModeIcon");
+		
+		Gamemodeiconchange();
+		
 		if (SongID == -1)
 			SongID = 0;
 
@@ -195,10 +215,10 @@ public partial class MusicCard : Button
 		}
 	}
 
-	private Color Idlecolour = new Color(0.20f, 0.20f, 0.20f, 1f);
-	private Color Focuscolour = new Color(1f, 1f, 1f, 1f);
-	private Color highlightcolour = new Color(0.19f, 0.37f, 0.65f, 1f);
-	private Color toggledcolour = new Color(0.09f, 0.38f, 0.85f, 1f);
+	private Color Idlecolour = new Color(0.20f, 0.20f, 0.20f);
+	private Color Focuscolour = new Color(0.647f, 0.647f, 0.647f);
+	private Color highlightcolour = new Color(0.19f, 0.37f, 0.65f);
+	private Color toggledcolour = new Color(0.09f, 0.38f, 0.85f);
 
 	private void _highlight() => AnimationButton(highlightcolour);
 	private void _focus()

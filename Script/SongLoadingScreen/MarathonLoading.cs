@@ -21,7 +21,7 @@ public partial class MarathonLoading : Control
 		if (anistate <1){
 			anistate++;
 		}else{
-			GetNode<SceneTransition>("/root/Transition").Switch("res://Panels/Screens/Gameplay.tscn");
+			GetNode<SceneTransition>("/root/Transition").Switch(SettingsOperator.ReturnGameModeTscn(SettingsOperator.SessionConfig.GameMode));
 		}
 	}
 	private void _on_back(){

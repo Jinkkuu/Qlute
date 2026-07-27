@@ -8,7 +8,7 @@ public partial class HealthBar : ProgressBar
     public int HealthProgress {get;set;}
     public static int MaxHealth = 150;
 
-    public static void Reset(){
+    public static void Reset(int MaxHealth = 150){
         Health = MaxHealth;
     }
     public static int Get(){

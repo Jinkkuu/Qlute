@@ -280,6 +280,7 @@ public partial class SettingsOperator : Node
             SessionConfig.LevelRating = beatmap.Levelrating;
             SessionConfig.BeatmapID =  beatmap.BeatmapID;
             SessionConfig.BeatmapSetID = beatmap.BeatmapSetID;
+            SessionConfig.GameMode = beatmap.GameModeID;
             SessionConfig.SongID = id;
             string bgpath = beatmap.Path.PathJoin(beatmap.Background.ToString());
             string checksumbg = null;
@@ -314,6 +315,16 @@ public partial class SettingsOperator : Node
         }
     }
 
+    public static string ReturnGameModeTscn(int mode)
+    {
+        switch (mode)
+        {
+            case 1 : return "res://Panels/GameModes/Taiko.tscn";
+        }
+
+        return "res://Panels/GameModes/Mania.tscn";
+    }
+    
     public static float TimeCap = 120;
 
     public static float GetLevelRating(float pp) => Mathf.Pow(pp / MaxPPCap, 0.7f) * 100f;
@@ -331,6 +342,18 @@ public partial class SettingsOperator : Node
         return Math.Max(0, ppvalue);
     }
 
+    public int ConvertModeIDFromOsu(int Mode)
+    {
+        switch (Mode)
+        {
+            case 0 : return 3;
+            case 1 : return 1;
+            case 3 : return 0;
+        }
+
+        return -1;
+    }
+    
     public static float MaxPPCap = 4000f; // don't make this static and PLEASE FIX THIS AFTERWARDS
     public static string Parse_Beatmapfile(string filename, int SetID = 0)
     {
@@ -375,6 +398,7 @@ public partial class SettingsOperator : Node
                     case "BeatmapID": legend.BeatmapID = int.TryParse(value, out var bid) ? bid : -1; break;
                     case "BeatmapSetID": legend.BeatmapSetID = int.TryParse(value, out var bset) ? bset : -1; break;
                     case "PreviewTime": legend.PreviewTime = (float.TryParse(value, out var pt) ? pt : 0) * 0.001f; break;
+                    case "Mode": legend.GameModeID = new SettingsOperator().ConvertModeIDFromOsu(int.TryParse(value, out var bgid) ? bgid : -1); break;
                 }
             }
 
@@ -677,6 +701,10 @@ public partial class SettingsOperator : Node
         /// Beatmap Accuracy for stricter inputs.
         /// </summary>
         public static int BeatmapAccuracy { get; set; } = 1;
+        /// <summary>
+        /// Let Qlute know what game mode to use to play.
+        /// </summary>
+        public static int GameMode { get; set; } = 0;
 
 
 
@@ -802,7 +830,8 @@ public partial class SettingsOperator : Node
             case (int)NotificationApplicationFocusOut:
                 GD.Print($"Detected not focused going to {UnfocusedFPS} FPS");
                 Unfocused = true;
-                Engine.MaxFps = UnfocusedFPS;
+                if (!SettingsOperator.inGameplay)
+                    Engine.MaxFps = UnfocusedFPS;
                 break;
         }
     }

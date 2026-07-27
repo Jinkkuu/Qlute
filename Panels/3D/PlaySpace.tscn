@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://cpcme6ndnypk0"]
+
+[ext_resource type="Script" uid="uid://2nl833uusvdi" path="res://Script/3D/Player3D.cs" id="1_8244w"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_8244w"]
+sky_top_color = Color(0.51953125, 0.72544634, 1, 1)
+sky_horizon_color = Color(0.90854573, 0.95227456, 1.011913, 1)
+ground_horizon_color = Color(0.90854573, 0.95227456, 1.011913, 1)
+
+[sub_resource type="Sky" id="Sky_l8m47"]
+sky_material = SubResource("ProceduralSkyMaterial_8244w")
+
+[sub_resource type="Environment" id="Environment_5jopm"]
+background_mode = 2
+sky = SubResource("Sky_l8m47")
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s576e"]
+albedo_color = Color(0, 0.37109375, 0.11886597, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_n13r0"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_n13r0"]
+
+[node name="Node3D" type="Node3D" unique_id=512910075]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=915407406]
+environment = SubResource("Environment_5jopm")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=564807045]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1725595105]
+size = Vector3(10, 0.5, 10)
+material = SubResource("StandardMaterial3D_s576e")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=453842432]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4961805, 0)
+script = ExtResource("1_8244w")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D" unique_id=620032106]
+mesh = SubResource("CapsuleMesh_n13r0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=1498125035]
+shape = SubResource("CapsuleShape3D_n13r0")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" unique_id=1605012228]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.52441216, 0)
+current = true

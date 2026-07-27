@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://c1aa8tscp5u6p" path="res://Panels/Overlays/BeatmapContextMenu.tscn" id="9_1t01f"]
 [ext_resource type="Script" uid="uid://b7udx8fmtfcbg" path="res://Script/SongSelect/SongSelectMode.cs" id="9_p2axe"]
 [ext_resource type="Script" uid="uid://jiq8w3wo2uhl" path="res://Script/SongSelect/SongDetails/Details.cs" id="12_fb0k2"]
+[ext_resource type="PackedScene" uid="uid://07ub4tqkb550" path="res://Panels/SongSelectElements/Modes.tscn" id="18_dhkys"]
 [ext_resource type="Script" uid="uid://0xn63uccdk6j" path="res://Script/TimerwithBPM/Bpmtick.cs" id="20_ihwey"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_5rktx"]
@@ -62,26 +63,6 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2gjtq"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xmk5a"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5rktx"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p2axe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ixo7g"]
 bg_color = Color(0.078, 0.078, 0.078, 0.8)
@@ -186,6 +167,26 @@ expand_margin_left = 65.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0g2hw"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2gjtq"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xmk5a"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5rktx"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p2axe"]
+
 [node name="Song Select" type="Control" unique_id=1389782858]
 layout_mode = 3
 anchors_preset = 15
@@ -247,111 +248,6 @@ grow_vertical = 2
 text = "XX"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="BottomBar" type="Control" parent="." unique_id=1440072184]
-z_index = 2
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -100.0
-grow_horizontal = 2
-grow_vertical = 0
-mouse_filter = 2
-
-[node name="ModsShown" parent="BottomBar" unique_id=7962095 instance=ExtResource("7_p20rm")]
-layout_mode = 1
-offset_left = 105.0
-offset_right = 605.0
-mouse_filter = 2
-
-[node name="ControlPanel" parent="BottomBar" unique_id=226854940 instance=ExtResource("7_p2axe")]
-layout_mode = 1
-
-[node name="Box" parent="BottomBar/ControlPanel" index="0"]
-theme_override_constants/separation = 5
-
-[node name="Mod" type="Button" parent="BottomBar/ControlPanel/Box" index="1" unique_id=1654882391]
-custom_minimum_size = Vector2(108, 50)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_2gjtq")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_xmk5a")
-theme_override_styles/hover = SubResource("StyleBoxFlat_5rktx")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_p2axe")
-script = ExtResource("8_5rktx")
-metadata/unfocus = Color(0.0784314, 0.0784314, 0.0784314, 1)
-metadata/focus = Color(0.21875, 0.21875, 0.21875, 1)
-metadata/highlight = Color(0.398438, 0.279665, 0.192993, 1)
-
-[node name="Label" type="Label" parent="BottomBar/ControlPanel/Box/Mod" unique_id=501686639]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Mods"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Random" type="Button" parent="BottomBar/ControlPanel/Box" index="2" unique_id=1493602830]
-custom_minimum_size = Vector2(108, 50)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_2gjtq")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_xmk5a")
-theme_override_styles/hover = SubResource("StyleBoxFlat_5rktx")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_p2axe")
-script = ExtResource("8_5rktx")
-metadata/unfocus = Color(0.0784314, 0.0784314, 0.0784314, 1)
-metadata/focus = Color(0.21875, 0.21875, 0.21875, 1)
-metadata/highlight = Color(0.228304, 0.398438, 0.192993, 1)
-
-[node name="Label" type="Label" parent="BottomBar/ControlPanel/Box/Random" unique_id=183803153]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Random"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Collections" type="Button" parent="BottomBar/ControlPanel/Box" index="3" unique_id=1217711355]
-visible = false
-custom_minimum_size = Vector2(108, 50)
-layout_mode = 2
-size_flags_horizontal = 0
-theme_override_styles/normal = SubResource("StyleBoxFlat_2gjtq")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_xmk5a")
-theme_override_styles/hover = SubResource("StyleBoxFlat_5rktx")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_p2axe")
-script = ExtResource("8_5rktx")
-metadata/unfocus = Color(0.0784314, 0.0784314, 0.0784314, 1)
-metadata/focus = Color(0.21875, 0.21875, 0.21875, 1)
-metadata/highlight = Color(0.192993, 0.205833, 0.398438, 1)
-
-[node name="Start" type="TextureButton" parent="BottomBar" unique_id=1106559813]
-custom_minimum_size = Vector2(128, 128)
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -148.0
-offset_top = -140.0
-offset_right = -20.0
-offset_bottom = -12.0
-grow_horizontal = 0
-grow_vertical = 0
-pivot_offset = Vector2(64, 64)
-texture_normal = ExtResource("7_0g2hw")
-ignore_texture_size = true
-stretch_mode = 4
 
 [node name="ControlBar" type="PanelContainer" parent="." unique_id=1342281278]
 z_index = 1
@@ -650,10 +546,152 @@ layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
+[node name="ModeScreen" parent="." unique_id=77774883 instance=ExtResource("18_dhkys")]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 110.0
+offset_top = -453.0
+offset_right = 510.0
+offset_bottom = -252.0
+grow_vertical = 0
+
 [node name="ModsScreen" parent="." unique_id=858960574 instance=ExtResource("6_4xos4")]
 visible = false
 z_index = 1
 layout_mode = 1
+
+[node name="BottomBar" type="Control" parent="." unique_id=1440072184]
+z_index = 2
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="ModsShown" parent="BottomBar" unique_id=7962095 instance=ExtResource("7_p20rm")]
+layout_mode = 1
+offset_left = 105.0
+offset_right = 605.0
+mouse_filter = 2
+
+[node name="ControlPanel" parent="BottomBar" unique_id=226854940 instance=ExtResource("7_p2axe")]
+layout_mode = 1
+
+[node name="Box" parent="BottomBar/ControlPanel" index="0"]
+theme_override_constants/separation = 5
+
+[node name="Mode" type="Button" parent="BottomBar/ControlPanel/Box" index="1" unique_id=1991199864]
+visible = false
+custom_minimum_size = Vector2(108, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_2gjtq")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_xmk5a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5rktx")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_p2axe")
+script = ExtResource("8_5rktx")
+metadata/unfocus = Color(0.0784314, 0.0784314, 0.0784314, 1)
+metadata/focus = Color(0.21875, 0.21875, 0.21875, 1)
+metadata/highlight = Color(0.23275124, 0.19215687, 0.4, 1)
+
+[node name="Label" type="Label" parent="BottomBar/ControlPanel/Box/Mode" unique_id=1537313072]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Mode"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Mod" type="Button" parent="BottomBar/ControlPanel/Box" index="2" unique_id=1654882391]
+custom_minimum_size = Vector2(108, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_2gjtq")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_xmk5a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5rktx")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_p2axe")
+script = ExtResource("8_5rktx")
+metadata/unfocus = Color(0.0784314, 0.0784314, 0.0784314, 1)
+metadata/focus = Color(0.21875, 0.21875, 0.21875, 1)
+metadata/highlight = Color(0.398438, 0.279665, 0.192993, 1)
+
+[node name="Label" type="Label" parent="BottomBar/ControlPanel/Box/Mod" unique_id=501686639]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Mods"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Random" type="Button" parent="BottomBar/ControlPanel/Box" index="3" unique_id=1493602830]
+custom_minimum_size = Vector2(108, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_2gjtq")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_xmk5a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5rktx")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_p2axe")
+script = ExtResource("8_5rktx")
+metadata/unfocus = Color(0.0784314, 0.0784314, 0.0784314, 1)
+metadata/focus = Color(0.21875, 0.21875, 0.21875, 1)
+metadata/highlight = Color(0.228304, 0.398438, 0.192993, 1)
+
+[node name="Label" type="Label" parent="BottomBar/ControlPanel/Box/Random" unique_id=183803153]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Random"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Collections" type="Button" parent="BottomBar/ControlPanel/Box" index="4" unique_id=1217711355]
+visible = false
+custom_minimum_size = Vector2(108, 50)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_2gjtq")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_xmk5a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_5rktx")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_p2axe")
+script = ExtResource("8_5rktx")
+metadata/unfocus = Color(0.0784314, 0.0784314, 0.0784314, 1)
+metadata/focus = Color(0.21875, 0.21875, 0.21875, 1)
+metadata/highlight = Color(0.192993, 0.205833, 0.398438, 1)
+
+[node name="Start" type="TextureButton" parent="BottomBar" unique_id=1106559813]
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -148.0
+offset_top = -140.0
+offset_right = -20.0
+offset_bottom = -12.0
+grow_horizontal = 0
+grow_vertical = 0
+pivot_offset = Vector2(64, 64)
+texture_normal = ExtResource("7_0g2hw")
+ignore_texture_size = true
+stretch_mode = 4
 
 [node name="ContextMenu" parent="." unique_id=1153064960 instance=ExtResource("9_1t01f")]
 visible = false
@@ -673,7 +711,21 @@ script = ExtResource("20_ihwey")
 [connection signal="mouse_entered" from="SongPanel" to="." method="_songenter"]
 [connection signal="mouse_exited" from="SongPanel" to="." method="_songexit"]
 [connection signal="value_changed" from="SongPanel/VScrollBar" to="." method="_valuechangedscroll"]
+[connection signal="focus_entered" from="ControlBar/AmazingPillar/Margin/MarginContainer/Beatmapsearch" to="." method="searchfocus"]
+[connection signal="focus_exited" from="ControlBar/AmazingPillar/Margin/MarginContainer/Beatmapsearch" to="." method="searchunfocus"]
+[connection signal="text_changed" from="ControlBar/AmazingPillar/Margin/MarginContainer/Beatmapsearch" to="." method="SearchPrepare"]
+[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/Details" to="." method="_leaderboardmode" binds= [2]]
+[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/Local" to="." method="_leaderboardmode" binds= [0]]
+[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/Global" to="." method="_leaderboardmode" binds= [1]]
+[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/Country" to="." method="_leaderboardmode" binds= [0]]
+[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/Teams" to="." method="_leaderboardmode" binds= [0]]
+[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/OpenExternal" to="." method="_openexternal"]
 [connection signal="pressed" from="BottomBar/ControlPanel/Box/BackButton" to="." method="_on_back_pressed"]
+[connection signal="button_down" from="BottomBar/ControlPanel/Box/Mode" to="BottomBar/ControlPanel/Box/Mode" method="_highlight"]
+[connection signal="button_up" from="BottomBar/ControlPanel/Box/Mode" to="BottomBar/ControlPanel/Box/Mode" method="_focus"]
+[connection signal="mouse_entered" from="BottomBar/ControlPanel/Box/Mode" to="BottomBar/ControlPanel/Box/Mode" method="_focus"]
+[connection signal="mouse_exited" from="BottomBar/ControlPanel/Box/Mode" to="BottomBar/ControlPanel/Box/Mode" method="_unfocus"]
+[connection signal="pressed" from="BottomBar/ControlPanel/Box/Mode" to="." method="_Mode_show"]
 [connection signal="button_down" from="BottomBar/ControlPanel/Box/Mod" to="BottomBar/ControlPanel/Box/Mod" method="_highlight"]
 [connection signal="button_up" from="BottomBar/ControlPanel/Box/Mod" to="BottomBar/ControlPanel/Box/Mod" method="_focus"]
 [connection signal="mouse_entered" from="BottomBar/ControlPanel/Box/Mod" to="BottomBar/ControlPanel/Box/Mod" method="_focus"]
@@ -694,15 +746,6 @@ script = ExtResource("20_ihwey")
 [connection signal="mouse_exited" from="BottomBar/Start" to="." method="_start_unfocus"]
 [connection signal="pressed" from="BottomBar/Start" to="." method="_Start"]
 [connection signal="pressed" from="BottomBar/Start" to="." method="_resetreplay"]
-[connection signal="focus_entered" from="ControlBar/AmazingPillar/Margin/MarginContainer/Beatmapsearch" to="." method="searchfocus"]
-[connection signal="focus_exited" from="ControlBar/AmazingPillar/Margin/MarginContainer/Beatmapsearch" to="." method="searchunfocus"]
-[connection signal="text_changed" from="ControlBar/AmazingPillar/Margin/MarginContainer/Beatmapsearch" to="." method="SearchPrepare"]
-[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/Details" to="." method="_leaderboardmode" binds= [2]]
-[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/Local" to="." method="_leaderboardmode" binds= [0]]
-[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/Global" to="." method="_leaderboardmode" binds= [1]]
-[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/Country" to="." method="_leaderboardmode" binds= [0]]
-[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/Teams" to="." method="_leaderboardmode" binds= [0]]
-[connection signal="pressed" from="SongDetails/Leaderboard Panel/Rows/Box4/OpenExternal" to="." method="_openexternal"]
 [connection signal="timeout" from="Bpmtick" to="." method="_tick"]
 
 [editable path="BottomBar/ControlPanel"]

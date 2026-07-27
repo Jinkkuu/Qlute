@@ -4,23 +4,36 @@ using System.Collections.Generic;
 using System.Linq;
 using Game;
 using System.Reflection.Metadata;
-public class NotesEn {
-	public int timing {get;set;}
-	public int NoteSection {get;set;}
-	public NoteSkinning Node {get;set;}
-	public bool hit {get;set;}
+
+public class DrumEn 
+{
+	public int timing { get; set; }
+	public DrumTypeGroup DrumType { get; set; } 
+	public bool DrumBig { get; set; }
+	public TaikoDrum Node { get; set; }
+	public bool hit { get; set; }
 	public string Sample => SampleSet.Normal.First();
 	public double ppv2xp { get; set; }
 }
-public class KeyL
+
+public enum DrumTypeGroup
 {
-	public PanelContainer Node { get; set; }
+	Inside = 0,  // Center / Don
+	Outside = 1  // Rim / Kat
+}
+public class DKeyL
+{
+	public Sprite2D Node { get; set; }
 	public bool hit { get; set; }
+	/// <summary>
+	/// True - Inner Drum
+	/// False - Outter Drum
+	/// </summary>
+	public DrumTypeGroup DrumType { get; set; }
 	public string KeyCode { get; set; }
 	public Tween Ani { get; set; }
 }
-
-public partial class Gameplay : Control
+public partial class TaikoGameCore : Control
 {
 	private string oldtitle = "";
 	private SettingsOperator SettingsOperator { get; set; }
@@ -28,10 +41,10 @@ public partial class Gameplay : Control
 	public static ApiOperator ApiOperator { get; set; }
 	//public static Label Ttiming { get; set; }
 	//public static Label Hits { get; set; }
-	public HBoxContainer Chart { get; set; }
+	public Control Road { get; set; }
 	private int HitPoint { get; set; }
 	private Tween MainScreenAnimation { get; set; }
-	public List<KeyL> Keys = new List<KeyL>();
+	public List<DKeyL> Keys = new List<DKeyL>();
 	public int JudgeResult = -1;
 	public int nodeSize = 54;
 	public bool HideHUD { get; set; }
@@ -51,7 +64,7 @@ public partial class Gameplay : Control
 	private Tween HurtAnimation { get; set; }
 	public Vector2 hittextoldpos { get; set; }
 	public Timer WaitClock { get; set; }
-	public List<NotesEn> Notes = new List<NotesEn>();
+	public List<DrumEn> Notes = new List<DrumEn>();
 	public TextureRect Beatmap_Background { get; set; }
 	private Node PauseMenu { get; set; }
 	private bool Finished { get; set; }
@@ -64,6 +77,7 @@ public partial class Gameplay : Control
 	private int scoreint { get; set; }
 	private Control SpectatorPanel { get; set; }
 	private Tween scoretween { get; set; }
+	[Export]
 	private int MaxNotes { get; set; }
 	private Label ComboCounter { get; set; }
 	public static int seed = 0;
@@ -71,6 +85,8 @@ public partial class Gameplay : Control
 	private float speedold = 1f;
 	private double ppmisspower = 1.2;
 	private float audioOffset { get; set; } = 0;
+	private Control TaikoTable { get; set; }
+	private Sprite2D HitBoxNode { get; set; }
 
 	// Spam protection: minimum ms between accepted key presses per column
 	private const float SPAM_COOLDOWN_MS = 80f; // 80ms — matches osu!mania's input buffer
@@ -123,37 +139,63 @@ public partial class Gameplay : Control
 		dance = beatmap.Dance;
 
 		var seen = new HashSet<(int timing, int section)>();
-
+	
 		foreach (string line in lines)
 		{
+			DrumEn PreLegend = new DrumEn();
 			if (line.Trim() == "[HitObjects]") { isHitObjectSection = true; continue; }
 			if (!isHitObjectSection) continue;
 			if (string.IsNullOrWhiteSpace(line) || line.StartsWith('[')) break;
 
 			string[] section = line.Split(':', ',');
 			timing = Convert.ToInt32(section[2]);
+			part = Convert.ToInt32(section[3]);
 
-			if (ModsOperator.Mods["random"])
-				part = BaseRnd.Next(0, 4);
-			else
+			switch (part)
 			{
-				part = Convert.ToInt32(section[0]);
-				part = Math.Clamp((int)Math.Floor(part * 4 / 512.0), 0, 3);
-			}
+				case 1:
+					// Hit Object type 1 = Circle (Normal Note)
+					// In Taiko, the 'type' (section[4]) determines if it's Red/Blue/Big
+					var DrumType = Convert.ToInt32(section[4]);
+					if (DrumType == 0)
+					{
+						PreLegend.DrumType = DrumTypeGroup.Inside;
+					} else if (DrumType == 2 || DrumType == 8) {
+						PreLegend.DrumType = DrumTypeGroup.Outside;
+					} else if (DrumType == 4) {
+						PreLegend.DrumType = DrumTypeGroup.Inside;
+						PreLegend.DrumBig = true;
+					} else if (DrumType == 6)
+					{
+						// "big blue" 
+						PreLegend.DrumType = DrumTypeGroup.Outside;
+						PreLegend.DrumBig = true;
+					}
 
+					break;
+
+				case 2:
+					// Hit Object type 2 = Slider ("swell" / Drumroll)
+					break;
+
+				case 8:
+					// Hit Object type 8 = Spinner ("spinner" / Denden)
+					break;
+
+				default:
+					// Handle unexpected object types if necessary
+					break;
+			}
 			timen = -timing;
 			var key = (timen, part);
 
 			// ✅ Skip duplicates in O(1), no linear scan
 			if (seen.Contains(key)) { index++; continue; }
 			seen.Add(key);
-
-			Notes.Add(new NotesEn
-			{
-				timing = timen,
-				NoteSection = part,
-				ppv2xp = beatmap.ppv2sets[index] * ModsMulti.multiplier
-			});
+			PreLegend.timing = timen; 
+			PreLegend.ppv2xp = beatmap.ppv2sets[index] * ModsMulti.multiplier;
+			Notes.Add(PreLegend);
+			
 			index++;
 		}
 
@@ -201,43 +243,21 @@ public partial class Gameplay : Control
 		Dead = false;
 		BeatmapBackground.FlashEnable = false;
 
-		HealthBar.Reset();
-		Control P = GetNode<Control>("Playfield");
-		Chart = GetNode<HBoxContainer>("Playfield/ChartSections");
+		HealthBar.Reset(10);
+		TaikoTable = GetNode<Control>("TaikoTable");
+		Road = TaikoTable.GetNode<Control>("Back/Road");
+		HitBoxNode = TaikoTable.GetNode<Sprite2D>("Back/HitBox");
 		hittext = GD.Load<PackedScene>("res://Panels/GameplayElements/Static/hittext.tscn").Instantiate().GetNode<TextureRect>(".");
 		hittextinit = true;
 		hittext.Modulate = new Color(1f, 1f, 1f, 0f);
 		hittext.ZIndex = 100;
-		GetNode<Control>("Playfield").AddChild(hittext);
+		HitBoxNode.AddChild(hittext);
 		hittextoldpos = hittext.Position;
-		
-		meh = new ColorRect();
-		meh.Color = new Color(0.5f, 0f, 0f, 0.3f);
-		meh.Visible = false;
-		meh.Size = new Vector2(450, SettingsOperator.MehJudge);
-		meh.Position = new Vector2(0, -SettingsOperator.MehJudge / 2);
-		GetNode<ColorRect>("Playfield/Guard").AddChild(meh);
-
-		great = new ColorRect();
-		great.Color = new Color(0f, 0.5f, 0f, 0.3f);
-		great.Visible = false;
-		great.Size = new Vector2(450, SettingsOperator.GreatJudge);
-		great.Position = new Vector2(0, -SettingsOperator.GreatJudge / 2);
-		GetNode<ColorRect>("Playfield/Guard").AddChild(great);
-
-		perfect = new ColorRect();
-		perfect.Color = new Color(0f, 0f, 0.5f, 0.3f);
-		perfect.Visible = false;
-		perfect.Size = new Vector2(450, SettingsOperator.PerfectJudge * 2);
-		perfect.Position = new Vector2(0, -SettingsOperator.PerfectJudge);
-		GetNode<ColorRect>("Playfield/Guard").AddChild(perfect);
-
-		foreach (int i in Enumerable.Range(1, 4))
-		{
-			var notet = GetNode<PanelContainer>("Playfield/ChartSections/Section" + i);
-			Keys.Add(new KeyL { Node = notet, hit = false , KeyCode = SettingsOperator.GetSetting($"Key{i - 1}").ToString()});
-			notet.SelfModulate = Skin.Element.LaneNotes[i - 1] / 2;
-		}
+		var TaikoDrums = TaikoTable.GetNode<Control>("Back/Drums").GetChildren();
+		Keys.Add(new DKeyL { Node = (Sprite2D)TaikoDrums[0], hit = false , KeyCode = SettingsOperator.GetSetting($"Key0").ToString(), DrumType = DrumTypeGroup.Outside});
+		Keys.Add(new DKeyL { Node = (Sprite2D)TaikoDrums[2], hit = false , KeyCode = SettingsOperator.GetSetting($"Key1").ToString(), DrumType = DrumTypeGroup.Inside});
+		Keys.Add(new DKeyL { Node = (Sprite2D)TaikoDrums[3], hit = false , KeyCode = SettingsOperator.GetSetting($"Key2").ToString(), DrumType = DrumTypeGroup.Inside});
+		Keys.Add(new DKeyL { Node = (Sprite2D)TaikoDrums[1], hit = false , KeyCode = SettingsOperator.GetSetting($"Key3").ToString(), DrumType = DrumTypeGroup.Outside});
 
 		maxrndvalue = (int)(1000000 * ModsMulti.multiplier);
 
@@ -250,10 +270,27 @@ public partial class Gameplay : Control
 		if (ModsOperator.Mods["auto"]) {
 			Replay.ResetReplay(); // Resets the replay to be cleared before making the auto replay.
 			SettingsOperator.SpectatorMode = true; // Enables Spectator Mode to play the Replay, without this it won't know it even existed lol :p
-			foreach (NotesEn note in Notes)
+			var keyo = false;
+			foreach (DrumEn note in Notes)
 			{
-				var time = -note.timing - 50;
-				var key = note.NoteSection;
+				var time = -note.timing;
+				var pkey = note.DrumType;
+				var key = 0;
+				if (pkey == DrumTypeGroup.Outside && keyo)
+				{
+					key = 3;
+				} else if (pkey == DrumTypeGroup.Outside && !keyo)
+				{
+					key = 0;
+				} else if (pkey == DrumTypeGroup.Inside && keyo)
+				{
+					key = 2;
+				} else if (pkey == DrumTypeGroup.Inside && !keyo)
+				{
+					key = 1;
+				}
+
+				keyo = !keyo;
 				Replay.AddReplay(time, key); // Adds the input into the Replay Cache.
 			}
 		}
@@ -294,10 +331,10 @@ public partial class Gameplay : Control
 			}
 			Sample.PlaySample("res://SelectableSkins/Slia/Sounds/" + name);
 			if (!SettingsOperator.SpectatorMode) Replay.AddReplay(est, Keyx);
-			key.Node.SelfModulate = Skin.Element.LaneNotes[Keyx];
+			key.Node.SelfModulate = new Color(1.2f,1.2f,1.2f,1f);
 			key.Ani?.Kill(); // Abort the previous animation
 			key.Ani = Keys[Keyx].Node.CreateTween();
-			key.Ani.TweenProperty(Keys[Keyx].Node, "self_modulate", Skin.Element.LaneNotes[Keyx] / 2, 0.5f).SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
+			key.Ani.TweenProperty(Keys[Keyx].Node, "self_modulate", new Color(1f,1f,1f,0.5f), 0.5f).SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
 			key.Ani.Play();
 		}
 		key.hit = hit;
@@ -380,30 +417,40 @@ public partial class Gameplay : Control
     {
 	    if (SettingsOperator.SpectatorMode) return;
 
-	    for (int i = 0; i < 4; i++)
+	    // 1. Quick Guard: If it's not a keyboard key event, ignore it immediately
+	    if (@event is not InputEventKey keyEvent) return;
+
+	    // 2. Performance Fix: Only read IsPressed once per event, not inside a loop
+	    bool pressed = keyEvent.IsPressed();
+
+	    for (int i = 0; i < Keys.Count; i++)
 	    {
+		    // 3. Performance Fix: Compare raw keycodes/enums instead of allocating strings with .ToString()
 		    var keyName = "Key" + (i + 1);
 		    if ( !(@event is InputEventKey Key) ) return;
 		    else if (Key.Keycode.ToString() == Keys[i].KeyCode)
 		    {
-			    bool pressed = @event.IsPressed();
-
 			    // Spam guard: if a key-down comes in too soon after the last one,
 			    // force a miss and ignore the input so it can't farm pp.
 			    if (pressed)
 			    {
 				    float nowMs = gametime; // est is already in ms
 				    float elapsed = nowMs - LastKeyPressTime[i];
+                
 				    if (elapsed < SPAM_COOLDOWN_MS && elapsed >= 0f)
 				    {
-					    // Register forced miss for the nearest unhit note in this column
-					    TriggerSpamMiss(i);
+					    // 4. Fixed: Safely cast or map your key index/bind to the DrumTypeGroup enum
+					    DrumTypeGroup drumSide = (DrumTypeGroup)Keys[i].DrumType;
+                    
+					    TriggerSpamMiss(drumSide);
 					    return;
 				    }
 				    LastKeyPressTime[i] = nowMs;
 			    }
 
+			    // Keep 'i' here if hitnote still expects the raw index (0-3) for your key layout
 			    hitnote(i, pressed, (int)gametime);
+			    break;
 		    }
 	    }
     }
@@ -411,34 +458,60 @@ public partial class Gameplay : Control
     /// <summary>
     /// Called when a key is spammed. Finds the nearest note in the column and registers a miss.
     /// </summary>
-    private void TriggerSpamMiss(int column)
+private void TriggerSpamMiss(DrumTypeGroup column)
+{
+    // Bound check optimization
+    int startIndex = Math.Min(MaxNotes, NoteTick);
+    int endIndex = Math.Min(MaxNotes, NoteTick + 256);
+
+    for (int i = startIndex; i < endIndex; i++)
     {
-	    for (int i = Math.Min(MaxNotes, NoteTick); i < Math.Min(MaxNotes, NoteTick + 256); i++)
-	    {
-		    var Note = Notes[i];
-		    if (Note.NoteSection == column && !Note.hit && Note.Node != null && Note.Node.Visible)
-		    {
-			    // Register miss
-			    Hittext(Skin.Element.JudgeMiss);
-			    SettingsOperator.Gameplaycfg.Bad++;
-			    if (SettingsOperator.Gameplaycfg.Combo > 50) Sample.PlaySample("res://SelectableSkins/Slia/Sounds/combobreak.wav");
-			    SettingsOperator.Gameplaycfg.Combo = 0;
-			    SettingsOperator.Gameplaycfg.pp = Math.Max(0, SettingsOperator.Gameplaycfg.pp / ppmisspower);
-			    BadCombo++;
-			    ComboAnimation();
-			    HealthBar.Damage(5 * BadCombo);
-			    if (HurtAnimation != null && HurtAnimation.IsRunning()) HurtAnimation.Stop();
-			    if (GetTree().CurrentScene is CanvasItem canvasScene) canvasScene.Modulate = new Color(1f, 0.5f, 0.5f, 1f);
-			    HurtAnimation = CreateTween();
-			    HurtAnimation.TweenProperty(GetTree().CurrentScene, "modulate", new Color(1f, 1f, 1f, 1f), 0.5f)
-				    .SetTrans(Tween.TransitionType.Cubic)
-				    .SetEase(Tween.EaseType.Out);
-			    Note.hit = true;
-			    Note.Node.Visible = false;
-			    break;
-		    }
-	    }
+        var Note = Notes[i];
+        
+        // Fixed: Directly comparing DrumTypeGroup enums without casting overhead
+        if (Note.DrumType == column && !Note.hit && Note.Node != null && Note.Node.Visible)
+        {
+            // Register miss
+            Hittext(Skin.Element.JudgeMiss);
+            SettingsOperator.Gameplaycfg.Bad++;
+            
+            if (SettingsOperator.Gameplaycfg.Combo > 50) 
+            {
+                Sample.PlaySample("res://SelectableSkins/Slia/Sounds/combobreak.wav");
+            }
+            
+            SettingsOperator.Gameplaycfg.Combo = 0;
+            SettingsOperator.Gameplaycfg.pp = Math.Max(0, SettingsOperator.Gameplaycfg.pp / ppmisspower);
+            BadCombo++;
+            ComboAnimation();
+            
+            // Scaling damage based on consecutive misses
+            HealthBar.Damage(5 * BadCombo);
+            
+            // Screen flash / Hurt visual animation
+            if (HurtAnimation != null && HurtAnimation.IsRunning()) 
+            {
+                HurtAnimation.Stop();
+            }
+            
+            if (GetTree().CurrentScene is CanvasItem canvasScene) 
+            {
+                canvasScene.Modulate = new Color(1f, 0.5f, 0.5f, 1f);
+            }
+            
+            HurtAnimation = CreateTween();
+            HurtAnimation.TweenProperty(GetTree().CurrentScene, "modulate", new Color(1f, 1f, 1f, 1f), 0.5f)
+                .SetTrans(Tween.TransitionType.Cubic)
+                .SetEase(Tween.EaseType.Out);
+                
+            // Mark note as processed so it doesn't get judged again
+            Note.hit = true;
+            Note.Node.Visible = false;
+            
+            break; // Break loop immediately after processing the first eligible missed note
+        }
     }
+}
 
     public override void _ExitTree()
     {
@@ -488,90 +561,150 @@ public partial class Gameplay : Control
 		BreakBGTween.TweenProperty(Beatmap_Background, "self_modulate", new Color(dim, dim, dim, 1f), 0.5f);
 		BreakBGTween.TweenCallback(Callable.From((() => {BreakTime = false;})));
 	}
-private void _GameNoteTick(double delta)
+
+	private string BigTaikoDrumCheck(bool ans)
 	{
-		gametime = GetRemainingTime(delta: (float)delta) / 0.001f;
-
-		//var scrollspeed = ComputeScrollTime(int.Parse(SettingsOperator.GetSetting("scrollspeed").ToString())); // Scroll speed for the notes
-		var scrollspeed = 1;
-		int Ttick = 0;
-		// Gamenotes
-
-		var viewportSize = 0f;
-		if (IsInsideTree())
+		switch (ans)
 		{
-			viewportSize = GetViewportRect().Size.Y;
-		}
-
-		var NoteCount = 0;
-		
-		if (!BreakTime && songstarted && Notes[Math.Min(Notes.Count - 1, NoteTick)].timing  + gametime + HitPoint <= -4500)
-		{
-			NoteBreakTiming = -(int)(Notes[Math.Min(Notes.Count - 1, NoteTick)].timing);
-			BreakNow();
-		}
-		
-		for (int i = Math.Min(MaxNotes, NoteTick); i < Math.Min(MaxNotes, NoteTick + 256); i++)
-		{
-			var Note = Notes[i];
-			var notex = Note.timing + gametime + HitPoint;
-			if (notex > -150 && notex < viewportSize + 150 && !Note.hit)
-			{
-				NoteCount++;
-				if (!Note.hit && Note.Node == null)
-				{
-					var playfieldpart =
-						GetNode<Control>($"Playfield/ChartSections/Section{Note.NoteSection + 1}/Control");
-					Note.Node = GD.Load<PackedScene>("res://Panels/GameplayElements/Static/note.tscn").Instantiate()
-						.GetNode<NoteSkinning>(".");
-					Note.Node.NotePart = Note.NoteSection;
-					Note.Node.SelfModulate = new Color(0.83f, 0f, 1f);
-					playfieldpart.AddChild(Note.Node);
-				}
-
-				if (ModsOperator.Mods["slice"] && Note.Node != null)
-				{
-					Note.Node.Modulate =
-						new Color(1f, 1f, 1f, Math.Min(HitPoint, Note.Node.Position.Y - 350) / HitPoint);
-				}
-				else if (ModsOperator.Mods["black-out"] && Note.Node != null)
-				{
-					Note.Node.Modulate = new Color(0f, 0f, 0f, 0f);
-				}
-
-				if (Note.Node != null)
-				{
-					Note.Node.Position = new Vector2(0, (notex * scrollspeed) - (HitPoint * (scrollspeed - 1)));
-					Ttick++;
-					JudgeResult = checkjudge((int)notex, Keys[Note.Node.NotePart].hit, Note);
-					if (JudgeResult < 3) // Only count actual hits (perfect/great/meh), not misses
-					{
-						// True hit offset in ms: how far the note was from the hit line when struck.
-						// Negative = early, Positive = late
-						float hitOffsetMs = notex - HitPoint;
-						SettingsOperator.Addms(hitOffsetMs + 50);
-						SettingsOperator.Gameplaycfg.ms = ComputeUnstableRate();
-					}
-				if (JudgeResult < 4)
-					{
-						Keys[Note.Node.NotePart].hit = false;
-						Note.hit = true;
-						Note.Node.Visible = false;
-					}
-					else
-					{
-						Keys[Note.Node.NotePart].hit = false;
-					}
-				}
-			}
-			else if (notex > viewportSize + 150 && Note.Node != null)
-			{
-				NoteTick++;
-				Note.Node.QueueFree();
-				Note.Node = null;
-			}
+			case true : return "res://Panels/GameplayElements/Taiko/BigTaikoThingy.tscn";
+			default: return "res://Panels/GameplayElements/Taiko/SmallTaikoThingy.tscn";
 		}
 	}
+	private bool IsDrumTypeHit(DrumTypeGroup targetGroup)
+	{
+		for (int i = 0; i < Keys.Count; i++)
+		{
+			DKeyL bind = Keys[i];
+			var keyName = "Key" + (i + 1);
+        
+			// Cast bind.DrumTypeGroup if it's an int, or update DKeyL to use the enum too
+			if ((DrumTypeGroup)bind.DrumType == targetGroup && SettingsOperator.GetSetting(keyName).ToString() == Keys[i].KeyCode)
+			{
+				bind.hit = true; 
+				return true;
+			}
+		}
+    
+		return false; 
+	}
+	// Helper to convert individual DrumTypes to their group (Inside/Outside)
+	private DrumTypeGroup GetDrumGroup(int drumType)
+	{
+		// Replace with your actual DrumType enum/integer checks.
+		// Assuming 0 and 1 are Left/Right Don, 2 and 3 are Left/Right Kat.
+		if (drumType == 0 || drumType == 1) 
+			return DrumTypeGroup.Inside;
+    
+		return DrumTypeGroup.Outside;
+	}
+
+// Helper to check if any key belonging to the group was hit
+	private bool IsGroupHit(DrumTypeGroup group)
+	{
+		// Checks if the active player input matches the note group
+		return IsDrumTypeHit(group); 
+	}
+
+// Helper to clear the hit flag for all keys associated with the group
+	private void ResetGroupHit(DrumTypeGroup group)
+	{
+		// Assuming Keys array is indexed or mapped to your specific drum types, 
+		// we clear the hit status for both left and right sides of that group.
+		if (group == DrumTypeGroup.Inside)
+		{
+			Keys[0].hit = false; // Left Don
+			Keys[1].hit = false; // Right Don
+		}
+		else
+		{
+			Keys[2].hit = false; // Left Kat
+			Keys[3].hit = false; // Right Kat
+		}
+	}
+
+private void _GameNoteTick(double delta)
+{
+    gametime = GetRemainingTime(delta: (float)delta) / 0.001f;
+    var scrollspeed = 1;
+    int Ttick = 0;
+
+    var viewportSize = 0f;
+    if (IsInsideTree())
+    {
+        viewportSize = GetViewportRect().Size.X;
+    }
+
+    var NoteCount = 0;
+    float hitPointLocal = new Vector2(HitBoxNode.GlobalPosition.X, 0).X;
+
+    if (!BreakTime && songstarted &&
+        Notes[Math.Min(Notes.Count - 1, NoteTick)].timing + gametime + HitPoint <= -4500)
+    {
+        NoteBreakTiming = -(int)(Notes[Math.Min(Notes.Count - 1, NoteTick)].timing);
+        BreakNow();
+    }
+
+    // 1. Capture the input snapshot for this single frame BEFORE looking at notes
+    bool insideGroupHit = Keys[1].hit || Keys[2].hit; // Left Don or Right Don
+    bool outsideGroupHit = Keys[0].hit || Keys[3].hit; // Left Kat or Right Kat
+
+    for (int i = Math.Min(MaxNotes, NoteTick); i < Math.Min(MaxNotes, NoteTick + 256); i++)
+    {
+        var Note = Notes[i];
+        var notex = Note.timing + gametime + HitPoint;
+
+        if (notex > -viewportSize && notex < viewportSize + 150 && !Note.hit)
+        {
+            NoteCount++;
+            if (!Note.hit && Note.Node == null)
+            {
+                Note.Node = GD.Load<PackedScene>(BigTaikoDrumCheck(Note.DrumBig)).Instantiate()
+                    .GetNode<TaikoDrum>(".");
+                Note.Node.DrumType = Note.DrumType;
+                Road.AddChild(Note.Node);
+            }
+
+            if (Note.Node != null)
+            {
+                Note.Node.Position = new Vector2(hitPointLocal + (hitPointLocal - notex) * scrollspeed, 0);
+                Ttick++;
+
+                DrumTypeGroup noteGroup = GetDrumGroup((int)Note.Node.DrumType);
+                bool groupIsHit = false;
+				
+                // 2. Map the note's group to our snapshot flags
+                if (Note.Node.DrumType == DrumTypeGroup.Outside && outsideGroupHit) groupIsHit = true;
+                else if (Note.Node.DrumType == DrumTypeGroup.Inside && insideGroupHit) groupIsHit = true;
+	                
+
+                JudgeResult = checkjudge((int)notex, groupIsHit, Note);
+
+                if (JudgeResult < 3)
+                {
+                    float hitOffsetMs = notex - HitPoint;
+                    SettingsOperator.Addms(hitOffsetMs);
+                    SettingsOperator.Gameplaycfg.ms = ComputeUnstableRate();
+                }
+
+                if (JudgeResult < 4)
+                {
+                    // Consume the hit snapshot for this group so trailing notes don't get accidentally hit
+                    if (noteGroup == DrumTypeGroup.Inside) insideGroupHit = false;
+                    else outsideGroupHit = false;
+
+                    Note.hit = true;
+                    Note.Node.Visible = false;
+                }
+            }
+        }
+    }
+
+    // 3. FORCE RESET: "Let go" of all buttons at the end of the frame processing tick
+    Keys[0].hit = false;
+    Keys[1].hit = false;
+    Keys[2].hit = false;
+    Keys[3].hit = false;
+}
 
 	private Tween HUDTween { get; set; }
 	private void HUDAni(bool value)
@@ -596,7 +729,6 @@ private void _GameNoteTick(double delta)
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		
 		dim = 1f - (1f * (SettingsOperator.SessionConfig.Backgrounddim * 0.01f));
 		score = new Game.ScoreCalculator().ProcessScore(SettingsOperator.Gameplaycfg.Max,
 			SettingsOperator.Gameplaycfg.Great, SettingsOperator.Gameplaycfg.Meh,
@@ -610,20 +742,13 @@ private void _GameNoteTick(double delta)
 			scoretween.Play();
 		}
 		SettingsOperator.Gameplaycfg.Score = scoreint; // Set the score of the player
-		HitPoint = (int)Chart.Size.Y - 150;
+		HitPoint = (int)HitBoxNode.Position.X;
 		try
 		{
-			// DEATH
-
-			if (HealthBar.Health == 0 && !Dead && !ModsOperator.Mods["no-fail"])
-			{
-				Dead = !Dead;
-				FailAnimation();
-			}
 
 			// End Game
 
-			if (SettingsOperator.Gameplaycfg.TimeTotalGame - SettingsOperator.Gameplaycfg.Time < 0 && !Finished)
+			if (SettingsOperator.Gameplaycfg.TimeTotalGame - SettingsOperator.Gameplaycfg.Time <= 0 && !Finished && (HealthBar.Health >= HealthBar.MaxHealth / 2 || ModsOperator.Mods["no-fail"]))
 			{
 				Finished = true;
 				Replay.SaveReplay();
@@ -639,6 +764,12 @@ private void _GameNoteTick(double delta)
 					SettingsOperator.SelectSongID(SettingsOperator.MarathonMapPaths[SettingsOperator.MarathonID]);
 					GetNode<SceneTransition>("/root/Transition").Switch("res://Panels/Screens/SongLoadingScreen.tscn");
 				}
+			} else if (SettingsOperator.Gameplaycfg.TimeTotalGame - SettingsOperator.Gameplaycfg.Time <= 0 && !Finished && (HealthBar.Health <= HealthBar.MaxHealth / 2 || !ModsOperator.Mods["no-fail"]) && !Dead)
+			{
+				
+				// DEATH
+				Dead = !Dead;
+				FailAnimation();
 			}
 
 			if (SettingsOperator.Gameplaycfg.Combo > SettingsOperator.Gameplaycfg.MaxCombo)
@@ -682,6 +813,7 @@ private void _GameNoteTick(double delta)
 				HideHUD = !HideHUD;
 				HUDAni(HideHUD);
 			}
+			
 			//debugtext.Text = $"est: {est}\nDanceIndex:{DanceIndex}\nTimeindex:{dance[DanceIndex].time}";
 
 			if ((int)gametime >= dance[DanceIndex].time + BeatmapBackground.bpm && BeatmapBackground.FlashEnable)
@@ -774,9 +906,9 @@ private void _GameNoteTick(double delta)
 			ComboTween.Play();
 		}
 	}
-	public int checkjudge(int timing, bool keyvalue, NotesEn Note)
+	public int checkjudge(int timing, bool keyvalue, DrumEn Note)
 	{
-		if (timing + nodeSize > HitPoint - SettingsOperator.PerfectJudge - 5 && timing + nodeSize < HitPoint + SettingsOperator.PerfectJudge + 5 && keyvalue && Note.Node.Visible)
+		if (timing > HitPoint - SettingsOperator.PerfectJudge - 5 && timing < HitPoint + SettingsOperator.PerfectJudge + 5 && keyvalue && Note.Node.Visible)
 		{
 			SettingsOperator.Gameplaycfg.Max++;
 			SettingsOperator.Gameplaycfg.Combo++;
@@ -787,7 +919,7 @@ private void _GameNoteTick(double delta)
 			HealthBar.Heal((5 * (SettingsOperator.Gameplaycfg.Combo / 100)) + 1);
 			return 0;
 		}
-		else if (timing + nodeSize > HitPoint - (SettingsOperator.GreatJudge / 2) - 5 && timing + nodeSize < HitPoint + (SettingsOperator.GreatJudge / 2) + 5 && keyvalue && Note.Node.Visible)
+		else if (timing > HitPoint - (SettingsOperator.GreatJudge / 2) - 5 && timing < HitPoint + (SettingsOperator.GreatJudge / 2) + 5 && keyvalue && Note.Node.Visible)
 		{
 			SettingsOperator.Gameplaycfg.Great++;
 			SettingsOperator.Gameplaycfg.Combo++;
@@ -798,7 +930,7 @@ private void _GameNoteTick(double delta)
 			HealthBar.Heal((3 * (SettingsOperator.Gameplaycfg.Combo / 300)) + 1);
 			return 1;
 		}
-		else if (timing + nodeSize > HitPoint - (SettingsOperator.MehJudge / 2) - 15 && timing + nodeSize < HitPoint + (SettingsOperator.MehJudge / 2) + 15 && keyvalue && Note.Node.Visible)
+		else if (timing > HitPoint - (SettingsOperator.MehJudge / 2) - 15 && timing < HitPoint + (SettingsOperator.MehJudge / 2) + 15 && keyvalue && Note.Node.Visible)
 		{
 			Hittext(Skin.Element.JudgeMeh);
 			SettingsOperator.Gameplaycfg.Meh++;
@@ -809,7 +941,7 @@ private void _GameNoteTick(double delta)
 			HealthBar.Heal((1 * (SettingsOperator.Gameplaycfg.Combo / 500)) + 1);
 			return 2;
 		}
-		else if (timing + nodeSize > GetViewportRect().Size.Y + 60 && Note.Node.Visible)
+		else if (timing > GetViewportRect().Size.X + 60 && Note.Node.Visible)
 		{
 			Hittext(Skin.Element.JudgeMiss);
 			SettingsOperator.Gameplaycfg.Bad++;

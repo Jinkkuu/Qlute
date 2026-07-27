@@ -59,7 +59,7 @@ public partial class SongLoadingScreen : Control
 	private void _Timer_load(){
 		SettingsOperator.toppaneltoggle(false);
 		ArtificialLoad.Stop();
-		GetNode<SceneTransition>("/root/Transition").Switch("res://Panels/Screens/Gameplay.tscn");
+		GetNode<SceneTransition>("/root/Transition").Switch(SettingsOperator.ReturnGameModeTscn(SettingsOperator.SessionConfig.GameMode));
 	}
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)

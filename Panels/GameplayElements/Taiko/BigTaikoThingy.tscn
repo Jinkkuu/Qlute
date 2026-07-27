@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://b8to7kbiwx220"]
+
+[ext_resource type="Texture2D" uid="uid://dpw51e53wv31i" path="res://Resources/Game/Taiko/BigTaikoThingyFill.png" id="1_ssald"]
+[ext_resource type="Script" uid="uid://6beyf8g51jqg" path="res://Script/Taiko/TaikoDrum.cs" id="2_3re5f"]
+[ext_resource type="Texture2D" uid="uid://jdwae263yf67" path="res://Resources/Game/Taiko/BigTaikoThingyOutline.png" id="2_tlhqe"]
+
+[node name="BigTaikoThingyF" type="Sprite2D" unique_id=392273260]
+texture = ExtResource("1_ssald")
+script = ExtResource("2_3re5f")
+
+[node name="BigTaikoThingyO" type="Sprite2D" parent="." unique_id=2037187]
+texture = ExtResource("2_tlhqe")

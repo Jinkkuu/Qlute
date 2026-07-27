@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://b2lw0mmphsddc"]
+[gd_scene format=3 uid="uid://b2lw0mmphsddc"]
 
 [ext_resource type="Script" uid="uid://dye2ljj2ycrnx" path="res://Script/SongSelect/MusicCard.cs" id="1_aa04f"]
 [ext_resource type="StyleBox" uid="uid://fxawsqvq06j4" path="res://Resources/System/buttonidle.tres" id="2_nf3oy"]
 [ext_resource type="Texture2D" uid="uid://sfbrs7c6t7dr" path="res://DefaultWallpaper/future.png" id="5_q6s5x"]
+[ext_resource type="Texture2D" uid="uid://dk6q3l8r3s8h6" path="res://Resources/System/GamemodeIcons/standard.png" id="5_w67jm"]
 [ext_resource type="Script" uid="uid://buiifhesbwgmp" path="res://Script/SongSelect/RatingCard.cs" id="5_y5yk1"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3see"]
@@ -34,7 +35,8 @@ content_margin_top = 3.0
 content_margin_right = 5.0
 content_margin_bottom = 3.0
 
-[node name="MusicCard" type="Button"]
+[node name="MusicCard" type="Button" unique_id=1104822971]
+self_modulate = Color(0.647, 0.647, 0.647, 1)
 custom_minimum_size = Vector2(350, 88)
 anchors_preset = 10
 anchor_right = 1.0
@@ -50,7 +52,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_i3see")
 toggle_mode = true
 script = ExtResource("1_aa04f")
 
-[node name="SongBackgroundPreview" type="PanelContainer" parent="."]
+[node name="SongBackgroundPreview" type="PanelContainer" parent="." unique_id=110071995]
 modulate = Color(0.901961, 0.901961, 0.901961, 1)
 clip_children = 1
 z_index = -1
@@ -64,28 +66,28 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_a1afo")
 
-[node name="BackgroundPreview" type="TextureRect" parent="SongBackgroundPreview"]
+[node name="BackgroundPreview" type="TextureRect" parent="SongBackgroundPreview" unique_id=1419142122]
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("5_q6s5x")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=2044164287]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 20
+theme_override_constants/margin_left = 55
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=240998923]
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="SongInfo" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+[node name="SongInfo" type="RichTextLabel" parent="MarginContainer/VBoxContainer" unique_id=1742664416]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 mouse_filter = 1
@@ -105,23 +107,23 @@ threaded = true
 deselect_on_focus_loss_enabled = false
 drag_and_drop_selection_enabled = false
 
-[node name="InfoBoxBG" type="PanelContainer" parent="MarginContainer/VBoxContainer"]
+[node name="InfoBoxBG" type="PanelContainer" parent="MarginContainer/VBoxContainer" unique_id=2120845562]
 layout_mode = 2
 size_flags_horizontal = 0
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_w67jm")
 
-[node name="InfoBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoBoxBG"]
+[node name="InfoBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer/InfoBoxBG" unique_id=1131078001]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 0
 
-[node name="Ranked" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoBoxBG/InfoBox"]
+[node name="Ranked" type="PanelContainer" parent="MarginContainer/VBoxContainer/InfoBoxBG/InfoBox" unique_id=2074253409]
 self_modulate = Color(0, 0, 0, 1)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_5o4qg")
 
-[node name="RankText" type="Label" parent="MarginContainer/VBoxContainer/InfoBoxBG/InfoBox/Ranked"]
+[node name="RankText" type="Label" parent="MarginContainer/VBoxContainer/InfoBoxBG/InfoBox/Ranked" unique_id=327021470]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_font_sizes/font_size = 10
@@ -129,7 +131,7 @@ text = "Unknown"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Rating" type="Label" parent="MarginContainer/VBoxContainer/InfoBoxBG/InfoBox"]
+[node name="Rating" type="Label" parent="MarginContainer/VBoxContainer/InfoBoxBG/InfoBox" unique_id=589001257]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_font_sizes/font_size = 10
@@ -138,14 +140,15 @@ text = "Lv. 69"
 horizontal_alignment = 1
 script = ExtResource("5_y5yk1")
 
-[node name="Version" type="Label" parent="MarginContainer/VBoxContainer/InfoBoxBG/InfoBox"]
+[node name="Version" type="Label" parent="MarginContainer/VBoxContainer/InfoBoxBG/InfoBox" unique_id=2024111754]
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_font_sizes/font_size = 10
 theme_override_styles/normal = SubResource("StyleBoxEmpty_p0ncd")
 text = "Difficulty Name"
 
-[node name="Handle" type="Label" parent="."]
+[node name="Handle" type="Label" parent="." unique_id=716006510]
+visible = false
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -156,6 +159,16 @@ offset_bottom = 9.5
 grow_vertical = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "|"
+
+[node name="GameModeIcon" type="TextureRect" parent="." unique_id=2030585966]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+texture = ExtResource("5_w67jm")
+expand_mode = 1
+stretch_mode = 5
 
 [connection signal="button_down" from="." to="." method="_highlight"]
 [connection signal="button_up" from="." to="." method="_focus"]

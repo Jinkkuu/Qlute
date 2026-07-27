@@ -1,0 +1,76 @@
+[gd_scene format=3 uid="uid://cplg102ehakr3"]
+
+[ext_resource type="Texture2D" uid="uid://qn6xuyiqgycp" path="res://Resources/Game/Taiko/Taikotable.png" id="1_3bm4s"]
+[ext_resource type="Texture2D" uid="uid://bbm8qnwd4bxal" path="res://Resources/Game/Taiko/HitBox.png" id="2_ocqom"]
+[ext_resource type="Texture2D" uid="uid://c276di0bi74ae" path="res://Resources/Game/Taiko/BlueDrum.png" id="3_dsksm"]
+[ext_resource type="Texture2D" uid="uid://c68lxh0843li6" path="res://Resources/Game/Taiko/RedDrum.png" id="4_t2u7w"]
+
+[node name="TaikoTable" type="Control" unique_id=1421529584]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Back" type="TextureRect" parent="." unique_id=1361516512]
+self_modulate = Color(1, 1, 1, 0.85)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -95.5
+offset_bottom = 95.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_3bm4s")
+
+[node name="HitBox" type="Sprite2D" parent="Back" unique_id=2089795169]
+self_modulate = Color(1, 1, 1, 0.85)
+position = Vector2(300, 100)
+texture = ExtResource("2_ocqom")
+
+[node name="Drums" type="Control" parent="Back" unique_id=597036620]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_right = 220.0
+grow_vertical = 2
+scale = Vector2(0.8, 0.8)
+pivot_offset = Vector2(100, 100)
+
+[node name="BlueDrumL" type="Sprite2D" parent="Back/Drums" unique_id=1133176676]
+self_modulate = Color(1, 1, 1, 0.5)
+texture = ExtResource("3_dsksm")
+offset = Vector2(55, 97)
+
+[node name="BlueDrumR" type="Sprite2D" parent="Back/Drums" unique_id=340635758]
+self_modulate = Color(1, 1, 1, 0.5)
+position = Vector2(88, 0)
+texture = ExtResource("3_dsksm")
+offset = Vector2(55, 97)
+flip_h = true
+
+[node name="RedDrumL" type="Sprite2D" parent="Back/Drums" unique_id=123769190]
+self_modulate = Color(1, 1, 1, 0.5)
+texture = ExtResource("4_t2u7w")
+offset = Vector2(55, 97)
+
+[node name="RedDrumR" type="Sprite2D" parent="Back/Drums" unique_id=862653745]
+self_modulate = Color(1, 1, 1, 0.5)
+position = Vector2(88, 0)
+texture = ExtResource("4_t2u7w")
+offset = Vector2(55, 97)
+flip_h = true
+
+[node name="Road" type="Control" parent="Back" unique_id=920894009]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2

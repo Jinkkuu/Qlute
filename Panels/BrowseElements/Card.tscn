@@ -1,7 +1,7 @@
-[gd_scene load_steps=22 format=3 uid="uid://b2pypl6ci4s6g"]
+[gd_scene format=3 uid="uid://b2pypl6ci4s6g"]
 
 [ext_resource type="Script" uid="uid://da5wukscc4c75" path="res://Script/Browse/CardFunctions.cs" id="1_pttee"]
-[ext_resource type="Texture2D" uid="uid://46vt33hasgbd" path="res://Resources/System/TopPanel/Download.svg" id="2_ilrch"]
+[ext_resource type="Texture2D" uid="uid://cyapjmfl0mtvg" path="res://Resources/System/TopPanel/Download.png" id="2_ilrch"]
 [ext_resource type="Texture2D" uid="uid://dhtk4mxqohiru" path="res://Resources/System/Heart.svg" id="4_ilrch"]
 [ext_resource type="Texture2D" uid="uid://cix7tpqhp0qkf" path="res://Resources/System/Browse/playidle.png" id="5_ilrch"]
 [ext_resource type="Texture2D" uid="uid://q500uwy2anai" path="res://Resources/System/Browse/playing.png" id="6_c4wxm"]
@@ -104,10 +104,10 @@ colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_wsj5f"]
 gradient = SubResource("Gradient_tgpg0")
 
-[node name="MusicCard" type="Button"]
+[node name="MusicCard" type="Button" unique_id=1638083755]
 self_modulate = Color(0.2, 0.2, 0.2, 0.5)
-clip_contents = true
 custom_minimum_size = Vector2(400, 115)
+clip_contents = true
 offset_right = 350.0
 offset_bottom = 115.0
 size_flags_horizontal = 3
@@ -117,7 +117,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_cufpe")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_i3see")
 script = ExtResource("1_pttee")
 
-[node name="Info" type="VBoxContainer" parent="."]
+[node name="Info" type="VBoxContainer" parent="." unique_id=1242212313]
 layout_mode = 0
 offset_left = 121.0
 offset_top = 7.0
@@ -125,7 +125,7 @@ offset_right = 353.0
 offset_bottom = 80.0
 alignment = 1
 
-[node name="SongTitle" type="Label" parent="Info"]
+[node name="SongTitle" type="Label" parent="Info" unique_id=2022338494]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.609375, 0.908447, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.313726)
@@ -135,7 +135,7 @@ vertical_alignment = 1
 clip_text = true
 text_overrun_behavior = 3
 
-[node name="SongArtist" type="Label" parent="Info"]
+[node name="SongArtist" type="Label" parent="Info" unique_id=1887296542]
 layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.313726)
 theme_override_font_sizes/font_size = 12
@@ -144,7 +144,7 @@ vertical_alignment = 1
 clip_text = true
 text_overrun_behavior = 3
 
-[node name="SongMapper" type="Label" parent="Info"]
+[node name="SongMapper" type="Label" parent="Info" unique_id=2052335427]
 layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.313726)
 theme_override_font_sizes/font_size = 12
@@ -153,7 +153,7 @@ vertical_alignment = 1
 clip_text = true
 text_overrun_behavior = 3
 
-[node name="SongReleaseDate" type="Label" parent="Info"]
+[node name="SongReleaseDate" type="Label" parent="Info" unique_id=969522224]
 layout_mode = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.313726)
 theme_override_font_sizes/font_size = 12
@@ -162,7 +162,7 @@ vertical_alignment = 1
 clip_text = true
 text_overrun_behavior = 3
 
-[node name="InfoBar-Base" type="PanelContainer" parent="."]
+[node name="InfoBar-Base" type="PanelContainer" parent="." unique_id=936452567]
 z_index = 1
 layout_mode = 1
 anchors_preset = 12
@@ -176,24 +176,24 @@ grow_vertical = 0
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_3w5u3")
 
-[node name="InfoBar-Space" type="MarginContainer" parent="InfoBar-Base"]
+[node name="InfoBar-Space" type="MarginContainer" parent="InfoBar-Base" unique_id=37972138]
 layout_mode = 2
 theme_override_constants/margin_left = 115
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="InfoBar" type="HBoxContainer" parent="InfoBar-Base/InfoBar-Space"]
+[node name="InfoBar" type="HBoxContainer" parent="InfoBar-Base/InfoBar-Space" unique_id=77522627]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/separation = 5
 
-[node name="RankColor" type="PanelContainer" parent="InfoBar-Base/InfoBar-Space/InfoBar"]
+[node name="RankColor" type="PanelContainer" parent="InfoBar-Base/InfoBar-Space/InfoBar" unique_id=1654390915]
 self_modulate = Color(0.171234, 0.707031, 0, 1)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_ilrch")
 
-[node name="RankText" type="Label" parent="InfoBar-Base/InfoBar-Space/InfoBar/RankColor"]
+[node name="RankText" type="Label" parent="InfoBar-Base/InfoBar-Space/InfoBar/RankColor" unique_id=617779689]
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -201,13 +201,13 @@ theme_override_font_sizes/font_size = 12
 text = "Ranked"
 vertical_alignment = 1
 
-[node name="LvStartColor" type="PanelContainer" parent="InfoBar-Base/InfoBar-Space/InfoBar"]
+[node name="LvStartColor" type="PanelContainer" parent="InfoBar-Base/InfoBar-Space/InfoBar" unique_id=2017454107]
 self_modulate = Color(0.339844, 0.339844, 0.339844, 1)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_ilrch")
 
-[node name="LvStartText" type="Label" parent="InfoBar-Base/InfoBar-Space/InfoBar/LvStartColor"]
+[node name="LvStartText" type="Label" parent="InfoBar-Base/InfoBar-Space/InfoBar/LvStartColor" unique_id=1394737137]
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -215,13 +215,13 @@ theme_override_font_sizes/font_size = 12
 text = "Lv. 2"
 vertical_alignment = 1
 
-[node name="LvEndColor" type="PanelContainer" parent="InfoBar-Base/InfoBar-Space/InfoBar"]
+[node name="LvEndColor" type="PanelContainer" parent="InfoBar-Base/InfoBar-Space/InfoBar" unique_id=1438390957]
 self_modulate = Color(0.488281, 0.488281, 0.488281, 1)
 layout_mode = 2
 mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_ilrch")
 
-[node name="LvEndText" type="Label" parent="InfoBar-Base/InfoBar-Space/InfoBar/LvEndColor"]
+[node name="LvEndText" type="Label" parent="InfoBar-Base/InfoBar-Space/InfoBar/LvEndColor" unique_id=1074150363]
 layout_mode = 2
 mouse_filter = 1
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -229,7 +229,7 @@ theme_override_font_sizes/font_size = 12
 text = "Lv. 37"
 vertical_alignment = 1
 
-[node name="Existed" type="PanelContainer" parent="."]
+[node name="Existed" type="PanelContainer" parent="." unique_id=1873342486]
 visible = false
 z_index = 2
 layout_mode = 1
@@ -241,7 +241,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_1lgpj")
 
-[node name="DownloadBar" type="PanelContainer" parent="."]
+[node name="DownloadBar" type="PanelContainer" parent="." unique_id=2111207806]
 z_index = 1
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 1
@@ -255,12 +255,12 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_pttee")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DownloadBar"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DownloadBar" unique_id=284946773]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="Download" type="Button" parent="DownloadBar/VBoxContainer"]
+[node name="Download" type="Button" parent="DownloadBar/VBoxContainer" unique_id=2075004497]
 z_index = 1
 layout_mode = 2
 mouse_filter = 1
@@ -273,7 +273,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_wsj5f")
 icon = ExtResource("2_ilrch")
 icon_alignment = 1
 
-[node name="Play" type="Button" parent="DownloadBar/VBoxContainer"]
+[node name="Play" type="Button" parent="DownloadBar/VBoxContainer" unique_id=813251929]
 visible = false
 z_index = 1
 layout_mode = 2
@@ -287,7 +287,7 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_wsj5f")
 icon = ExtResource("5_ilrch")
 icon_alignment = 1
 
-[node name="Favorite" type="Button" parent="DownloadBar/VBoxContainer"]
+[node name="Favorite" type="Button" parent="DownloadBar/VBoxContainer" unique_id=1107658102]
 z_index = 1
 layout_mode = 2
 mouse_filter = 1
@@ -301,7 +301,7 @@ disabled = true
 icon = ExtResource("4_ilrch")
 icon_alignment = 1
 
-[node name="SongBackgroundPreview" type="PanelContainer" parent="."]
+[node name="SongBackgroundPreview" type="PanelContainer" parent="." unique_id=1947464684]
 clip_children = 2
 layout_mode = 1
 anchors_preset = 9
@@ -314,14 +314,14 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_a1afo")
 
-[node name="BackgroundPreview" type="TextureRect" parent="SongBackgroundPreview"]
+[node name="BackgroundPreview" type="TextureRect" parent="SongBackgroundPreview" unique_id=707002924]
 layout_mode = 2
 mouse_filter = 2
 texture = SubResource("GradientTexture2D_wsj5f")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Playbutton" type="TextureButton" parent="SongBackgroundPreview"]
+[node name="Playbutton" type="TextureButton" parent="SongBackgroundPreview" unique_id=936298942]
 texture_filter = 2
 layout_mode = 2
 toggle_mode = true
@@ -331,7 +331,7 @@ ignore_texture_size = true
 stretch_mode = 0
 script = ExtResource("7_1lgpj")
 
-[node name="SongProgress" type="TextureProgressBar" parent="SongBackgroundPreview/Playbutton"]
+[node name="SongProgress" type="TextureProgressBar" parent="SongBackgroundPreview/Playbutton" unique_id=369984046]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

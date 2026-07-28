@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://8ue5al5uryf"]
+[gd_scene format=3 uid="uid://8ue5al5uryf"]
 
 [ext_resource type="Script" uid="uid://b1bto8b25fr5r" path="res://Script/Singleton/FpsCounter.cs" id="1_8u44f"]
 
@@ -7,8 +7,7 @@ content_margin_left = 5.0
 content_margin_top = 2.0
 content_margin_right = 5.0
 content_margin_bottom = 2.0
-bg_color = Color(0.24269372, 0.24269372, 0.24269372, 0.5)
-skew = Vector2(0.2, 0)
+bg_color = Color(0, 0, 0, 0.6)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -25,9 +24,10 @@ variation_opentype = {
 font = SubResource("FontVariation_5gjgc")
 font_size = 12
 
-[node name="FPSCounter" type="PanelContainer"]
+[node name="FPSCounter" type="PanelContainer" unique_id=2009380641]
 process_mode = 3
 z_index = 1000
+custom_minimum_size = Vector2(60, 35)
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -43,19 +43,19 @@ mouse_filter = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_nt8dy")
 script = ExtResource("1_8u44f")
 
-[node name="Latency" type="Label" parent="."]
+[node name="Latency" type="Label" parent="." unique_id=275298795]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 12
-text = "10.67ms"
+text = "100.00ms"
 label_settings = SubResource("LabelSettings_u8wtu")
 horizontal_alignment = 2
 
-[node name="FPS" type="Label" parent="."]
+[node name="FPS" type="Label" parent="." unique_id=971931647]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_font_sizes/font_size = 12
-text = "1006fps"
+text = "9999fps"
 label_settings = SubResource("LabelSettings_u8wtu")
 horizontal_alignment = 2
 vertical_alignment = 2

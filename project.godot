@@ -42,6 +42,7 @@ buses/default_bus_layout="uid://gw4d3826ldol"
 
 [autoload]
 
+SteamEngine="*uid://coxo6qeawgiee"
 SettingsOperator="*res://Script/Singleton/SettingsOperator.cs"
 AudioPlayer="*res://Script/Singleton/AudioPlayer.cs"
 Kiko="*res://Script/Updater/Kiko.cs"
@@ -231,3 +232,11 @@ environment/defaults/default_clear_color=Color(0, 0, 0, 1)
 options/skip_auto_init_on_editor_play=true
 options/dsn="https://8f83a1cb11fc8556b869dad47bc7d4b2@o4510694149914624.ingest.us.sentry.io/4510698719084544"
 options/debug_printing=0
+
+[steam]
+
+initialization/app_data/app_id=480
+initialization/app_data/demo_id=480
+initialization/app_data/playtest_id=480
+initialization/app_data/tool_id=480
+initialization/processes/initialize_on_startup=true

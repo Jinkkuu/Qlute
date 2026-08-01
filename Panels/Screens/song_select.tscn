@@ -74,6 +74,19 @@ expand_margin_bottom = 5.0
 content_margin_left = 15.0
 content_margin_right = 15.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s8vjv"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 1, 1, 0.25)
+skew = Vector2(0.2, 0)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+expand_margin_right = 35.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p2axe"]
 content_margin_left = 15.0
 content_margin_top = 15.0
@@ -292,7 +305,9 @@ theme_override_constants/margin_bottom = 0
 [node name="Beatmapsearch" type="LineEdit" parent="ControlBar/AmazingPillar/Margin/MarginContainer" unique_id=33041311]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-size_flags_vertical = 4
+offset_transform_enabled = true
+theme_override_styles/normal = SubResource("StyleBoxFlat_s8vjv")
+theme_override_styles/focus = SubResource("StyleBoxFlat_s8vjv")
 placeholder_text = "search...."
 clear_button_enabled = true
 
@@ -582,10 +597,14 @@ offset_right = 605.0
 mouse_filter = 2
 
 [node name="ControlPanel" parent="BottomBar" unique_id=226854940 instance=ExtResource("7_p2axe")]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 1
 
 [node name="Box" parent="BottomBar/ControlPanel" index="0"]
 theme_override_constants/separation = 5
+
+[node name="BackButton" parent="BottomBar/ControlPanel/Box" index="0"]
+size_flags_vertical = 8
 
 [node name="Mode" type="Button" parent="BottomBar/ControlPanel/Box" index="1" unique_id=1991199864]
 visible = false

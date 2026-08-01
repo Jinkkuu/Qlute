@@ -26,6 +26,7 @@ public partial class AudioPlayer : AudioStreamPlayer
         MasterVol = int.TryParse(SettingsOperator.GetSetting("master").ToString(), out int mtr) ? mtr : 80;
         SampleVol = int.TryParse(SettingsOperator.GetSetting("sample").ToString(), out int smp) ? smp : 70;
         VolumeDb = ToDB(MasterVol);
+        VolumeKnob.SavedValue = AudioPlayer.MasterVol;
     }
 
     public static float ToDB(float value) => Mathf.LinearToDb(value / 100.0f) - 10f;
@@ -66,6 +67,9 @@ public partial class AudioPlayer : AudioStreamPlayer
 
         return fileStream;
     }
+
+    public static bool isMasterMuted() => (MasterVol == 0);
+    
     public static void LoadMusic(string audioPath, float seek = 0)
     {
         if (System.IO.File.Exists(audioPath))

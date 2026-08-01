@@ -28,7 +28,7 @@ public partial class SettingsOperator : Node
     public static string CardBorderURL { get; set; } = null;
     public static int OCombo { get; set; } = 0;
     public static float OldAccuracy { get; set; } = 0;
-    public static float OAccuracy { get; set; } = 0;
+    public static float OAccuracy { get; set; } = 0f;
     public static bool JustPlayedScore {get; set;}
     
     public static string homedir = OS.GetUserDataDir().Replace("\\", "/");
@@ -280,7 +280,8 @@ public partial class SettingsOperator : Node
             SessionConfig.LevelRating = beatmap.Levelrating;
             SessionConfig.BeatmapID =  beatmap.BeatmapID;
             SessionConfig.BeatmapSetID = beatmap.BeatmapSetID;
-            SessionConfig.GameMode = beatmap.GameModeID;
+            //SessionConfig.GameMode = beatmap.GameModeID; 
+            SessionConfig.GameMode = 0; // Use the gamemodeID later when done. 
             SessionConfig.SongID = id;
             string bgpath = beatmap.Path.PathJoin(beatmap.Background.ToString());
             string checksumbg = null;
@@ -814,7 +815,7 @@ public partial class SettingsOperator : Node
         }
         if (LeaderboardType < 0 && LeaderboardType > 2) LeaderboardType = 1;
         CheckOldSiteUrl();
-        GameChecksum = ChecksumUtil.GetGameChecksum(); 
+        GameChecksum = ChecksumUtil.GetGameChecksum();
     }
 
     public override void _Notification(int what)

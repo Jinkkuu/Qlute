@@ -116,39 +116,27 @@ public partial class TopPanel : ColorRect
 	}
 	
 	private Control VolumePanel { get; set; }
+	private CanvasLayer VolumeLayer { get; set; }
 	public override void _Process(double _delta)
 	{
 		Loadingicon.Visible = (bool)SettingsOperator.SessionConfig.Loggingin;
 
-		if (Input.IsActionJustPressed("Special"))
+		if (Input.IsActionJustPressed("Special") && !Global.VolumeControlActive)
 		{
+			Global.VolumeControlActive = true;
 			VolumePanel?.QueueFree();
-			VolumePanel = GD.Load<PackedScene>("res://Panels/Overlays/VolumeControl.tscn").Instantiate().GetNode<Control>(".");
-			AddChild(VolumePanel);
+			VolumeLayer = GD.Load<PackedScene>("res://Panels/Overlays/VolumeControl.tscn").Instantiate().GetNode<CanvasLayer>(".");
+			VolumePanel = VolumeLayer.GetNode<Control>("VolumeControl");
+			GetTree().Root.AddChild(VolumeLayer);
 			GetTree().CurrentScene.GetNode(".").SetProcessInput(false);
 			var _tween = VolumePanel.CreateTween();
-			VolumePanel.Position = new Vector2(-VolumePanel.Size.X, 50);
-			VolumePanel.Size = new Vector2(VolumePanel.Size.X, GetViewportRect().Size[1]);
-			VolumePanel.MouseFilter = Control.MouseFilterEnum.Ignore;
 			VolumePanel.Modulate = new Color(1f, 1f, 1f, 0f);
+			VolumePanel.Position = new Vector2(-VolumePanel.Size.X, VolumePanel.Position.Y);
 			_tween.SetParallel(true);
 			_tween.TweenProperty(VolumePanel, "position", new Vector2(0, VolumePanel.Position.Y), 0.3f)
 				.SetTrans(Tween.TransitionType.Cubic)
 				.SetEase(Tween.EaseType.Out);
 			_tween.TweenProperty(VolumePanel, "modulate", new Color(1f, 1f, 1f, 1f), 0.3f)
-				.SetTrans(Tween.TransitionType.Cubic)
-				.SetEase(Tween.EaseType.Out);
-			_tween.Play();
-		}
-		else if (Input.IsActionJustReleased("Special") && IsInstanceValid(VolumePanel))
-		{
-			var _tween = VolumePanel.CreateTween();
-			GetTree().CurrentScene.GetNode(".").SetProcessInput(true);
-			_tween.SetParallel(true);
-			_tween.TweenProperty(VolumePanel, "position", new Vector2(-VolumePanel.Size.X, VolumePanel.Position.Y), 0.3f)
-				.SetTrans(Tween.TransitionType.Cubic)
-				.SetEase(Tween.EaseType.Out);
-			_tween.TweenProperty(VolumePanel, "modulate", new Color(1f, 1f, 1f, 0f), 0.3f)
 				.SetTrans(Tween.TransitionType.Cubic)
 				.SetEase(Tween.EaseType.Out);
 			_tween.Play();

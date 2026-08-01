@@ -73,6 +73,7 @@ corner_radius_top_left = 15
 corner_radius_bottom_left = 15
 
 [node name="InfoBar" type="ColorRect" unique_id=671856596]
+process_mode = 3
 custom_minimum_size = Vector2(0, 50)
 anchors_preset = 10
 anchor_right = 1.0
@@ -192,6 +193,7 @@ icon_alignment = 1
 script = ExtResource("8_dcn2n")
 
 [node name="Clock" type="RichTextLabel" parent="Widgets" unique_id=1586674962]
+process_mode = 3
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 theme_override_fonts/normal_font = SubResource("FontVariation_0d1ka")
@@ -208,6 +210,7 @@ drag_and_drop_selection_enabled = false
 script = ExtResource("9_phkx3")
 
 [node name="Tick" type="Timer" parent="Widgets/Clock" unique_id=224999693]
+process_mode = 3
 autostart = true
 
 [node name="Notifications" type="Button" parent="Widgets" unique_id=161884438]

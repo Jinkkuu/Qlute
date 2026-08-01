@@ -14,6 +14,7 @@ public partial class Global : Node
 	private Node _CurrentScene { get; set; }
 	public bool _skineditorEnabled = false;
 	public static bool _SkinStart = false;
+	public static bool VolumeControlActive;
 	private Control _skineditorScene;
 	private Tween SkinEditorAni { get; set; }
 

@@ -465,7 +465,7 @@ public partial class Gameplay : Control
 		BreakBGTween = GetTree().CreateTween();
 		BreakBGTween.SetTrans(Tween.TransitionType.Cubic);
 		BreakBGTween.SetEase(Tween.EaseType.Out);
-		BreakBGTween.TweenProperty(Beatmap_Background, "self_modulate", new Color(1f, 1f, 1f, 1f), 0.5f);
+		BreakBGTween.TweenProperty(Beatmap_Background, "self_modulate", new Color("7a7a7a"), 0.5f);
 		if (IsInstanceValid(Break))
 		{
 			Break?.QueueFree();

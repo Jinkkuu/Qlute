@@ -776,7 +776,7 @@ private void _GameNoteTick(double delta)
 	}
 	public int checkjudge(int timing, bool keyvalue, NotesEn Note)
 	{
-		if (timing + nodeSize > HitPoint - SettingsOperator.PerfectJudge - 5 && timing + nodeSize < HitPoint + SettingsOperator.PerfectJudge + 5 && keyvalue && Note.Node.Visible)
+		if (timing + nodeSize > HitPoint - SettingsOperator.PerfectJudge - 5 && timing + nodeSize < HitPoint + SettingsOperator.PerfectJudge + 15 && keyvalue && Note.Node.Visible)
 		{
 			SettingsOperator.Gameplaycfg.Max++;
 			SettingsOperator.Gameplaycfg.Combo++;
@@ -787,7 +787,7 @@ private void _GameNoteTick(double delta)
 			HealthBar.Heal((5 * (SettingsOperator.Gameplaycfg.Combo / 100)) + 1);
 			return 0;
 		}
-		else if (timing + nodeSize > HitPoint - (SettingsOperator.GreatJudge / 2) - 5 && timing + nodeSize < HitPoint + (SettingsOperator.GreatJudge / 2) + 5 && keyvalue && Note.Node.Visible)
+		else if (timing + nodeSize > HitPoint - (SettingsOperator.GreatJudge / 2) - 5 && timing + nodeSize < HitPoint + (SettingsOperator.GreatJudge / 2) + 15 && keyvalue && Note.Node.Visible)
 		{
 			SettingsOperator.Gameplaycfg.Great++;
 			SettingsOperator.Gameplaycfg.Combo++;

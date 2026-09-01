@@ -42,7 +42,6 @@ buses/default_bus_layout="uid://gw4d3826ldol"
 
 [autoload]
 
-SteamEngine="*uid://coxo6qeawgiee"
 SettingsOperator="*res://Script/Singleton/SettingsOperator.cs"
 AudioPlayer="*res://Script/Singleton/AudioPlayer.cs"
 Kiko="*res://Script/Updater/Kiko.cs"
